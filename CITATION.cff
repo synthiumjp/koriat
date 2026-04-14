@@ -1,0 +1,25 @@
+cff-version: 1.2.0
+message: "If you use this software or pre-registration, please cite it as below."
+title: "Verbal Confidence Saturation in Open-Weight Instruction-Tuned LLMs"
+authors:
+  - family-names: "Cacioli"
+    given-names: "JP"
+    orcid: "https://orcid.org/0009-0000-7054-2014"
+date-released: 2026-04-15
+version: "1.2"
+license: MIT
+repository-code: "https://github.com/"
+identifiers:
+  - type: url
+    value: "https://osf.io/azbvx"
+    description: "OSF pre-registration (immutable)"
+  - type: url
+    value: "https://osf.io/xgt73"
+    description: "OSF project page"
+keywords:
+  - large language models
+  - metacognition
+  - verbal confidence
+  - calibration
+  - pre-registration
+  - open-weight models

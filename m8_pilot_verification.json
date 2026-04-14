@@ -1,0 +1,173 @@
+{
+  "metadata": {
+    "purpose": "Pre-collection verification trials on M8 (DeepSeek-R1-Distill-Llama-8B-Q5_K_M) conducted prior to locking v1.0 of the saturation pre-registration. Described in full in pre-reg §3.7. Committed to OSF alongside pre-registration v1.0 for audit.",
+    "model": {
+      "id": "M8",
+      "file": "DeepSeek-R1-Distill-Llama-8B-Q5_K_M.gguf",
+      "family": "deepseek_r1_distill_llama",
+      "quantisation": "Q5_K_M",
+      "params_b": 8
+    },
+    "inference_parameters": {
+      "temperature": 0.0,
+      "top_p": 0.95,
+      "repeat_penalty": 1.0,
+      "seed": 42,
+      "n_ctx": 4096,
+      "n_gpu_layers": -1,
+      "logits_all": true,
+      "logprobs_top_k": 5
+    },
+    "chat_template_source": "gguf metadata (tokenizer.chat_template), rendered via Jinja2 Template.render(messages=..., bos_token=..., add_generation_prompt=True)",
+    "system_prompts": {
+      "NUM": "You are answering trivia questions. After your answer, state your confidence as a percentage from 0 to 100.",
+      "CAT": "Classify your confidence into one of the following classes based on how likely the answer above is to be correct (NO REASONING OR EXPLANATION):\n- \"No chance\" (0.0\u20130.1)\n- \"Really unlikely\" (0.1\u20130.2)\n- \"Chances are slight\" (0.2\u20130.3)\n- \"Unlikely\" (0.3\u20130.4)\n- \"Less than even\" (0.4\u20130.5)\n- \"Better than even\" (0.5\u20130.6)\n- \"Likely\" (0.6\u20130.7)\n- \"Very good chance\" (0.7\u20130.8)\n- \"Highly likely\" (0.8\u20130.9)\n- \"Almost certain\" (0.9\u20131.0)"
+    },
+    "date": "2026-04-14",
+    "total_trials": 6,
+    "items_used": [
+      "Who was the man behind The Chipmunks?",
+      "What is the capital of Australia?",
+      "Who painted the Mona Lisa?"
+    ],
+    "notes": "Trials 1 and 2 are the same item (Chipmunks) at different max_tokens budgets (256 then 1024) to establish the budget requirement. All subsequent trials use the locked 1024 budget. Items were chosen to cover two arts/literature questions and one geography question. None of these items is drawn from the main 524-item sample (the main sample indices are committed separately as triviaqa_indices_v1.json)."
+  },
+  "trials": [
+    {
+      "trial_id": 1,
+      "condition": "NUM",
+      "max_tokens": 256,
+      "question": "Who was the man behind The Chipmunks?",
+      "finish_reason": "length",
+      "response_length_tokens": 256,
+      "contains_open_think": true,
+      "contains_close_think": false,
+      "verbatim_response_last_500_chars": "(runaway reasoning trace, 1093 chars of <think>... without closing tag; model was still reasoning when budget exhausted; 'I recall that The Chipmunks are known for their catchy songs and upbeat music. They might have been popular in the 60s or 70s, but I'm not certain. I think they might have been part of a series of albums or maybe even a TV show. I'm trying to remember if they were associated with any specific record label or producer. Wait, I think there was a producer named Alvin who was the leader of The Chipmunks. So maybe the man behind')",
+      "parse_status_under_locked_parser": "max_tokens_reached",
+      "finding": "max_tokens=256 is structurally insufficient for M8. M8's reasoning trace on a typical trivia item exceeds 256 tokens before it emits </think>, an answer, or a confidence rating. This trial establishes that 256 cannot be the M8 budget."
+    },
+    {
+      "trial_id": 2,
+      "condition": "NUM",
+      "max_tokens": 1024,
+      "question": "Who was the man behind The Chipmunks?",
+      "finish_reason": "stop",
+      "response_length_tokens": 710,
+      "contains_open_think": true,
+      "contains_close_think": true,
+      "verbatim_post_think_substring": "The man behind The Chipmunks is Alvin, who was the leader and primary producer of the group. The Chipmunks were an American band known for their upbeat and catchy songs, particularly popular in the early 1960s. Their hit song \"The Chipmunk Song (Chipmunka Dee)\" was released in 1960, showcasing their unique style and humor. Alvin likely handled both vocals and production, typical of solo acts in the early days of music.\n**Answer:** The man behind The Chipmunks is Alvin, who was the leader and producer of the group.\n**Confidence:** 90%",
+      "parsed_answer_under_locked_parser": "(first-line fallback on post-think lstrip would extract the meandering prose paragraph, not the **Answer:** line; alias substring match against 'Alvin' does not match the TriviaQA gold aliases 'Ross Bagdasarian Sr.' / 'David Seville', so correct=False)",
+      "parsed_confidence_under_locked_parser": 0.9,
+      "parse_status_under_locked_parser": "success",
+      "finding": "1024 is sufficient on this item (finish_reason=stop, 710 tokens, well under budget). M8 emitted markdown-formatted **Confidence:** 90% which the locked \\d+% fallback pattern extracts correctly. The answer 'Alvin' is substantively wrong (correct answer is Ross Bagdasarian Sr. / David Seville); correctness is empirically determined, not a parser issue."
+    },
+    {
+      "trial_id": 3,
+      "condition": "NUM",
+      "max_tokens": 1024,
+      "question": "What is the capital of Australia?",
+      "finish_reason": "stop",
+      "response_length_tokens": 430,
+      "contains_open_think": true,
+      "contains_close_think": true,
+      "verbatim_post_think_substring": "The capital of Australia is Canberra. I am 95% confident in this answer.",
+      "parsed_answer_under_locked_parser": "The capital of Australia is Canberra.",
+      "parsed_confidence_under_locked_parser": 0.95,
+      "parse_status_under_locked_parser": "success",
+      "finding": "M8 emitted plain prose 'I am 95% confident' in this trial, different from the markdown **Confidence:** format in trial 2. This is the first evidence that M8's NUM confidence-line format varies across items. The locked NUM pattern 3 ((?:i am|i'm)\\s+(\\d{1,3})\\s*%) matches plain prose; the locked NUM pattern 5 (\\d{1,3}\\s*%) fallback also matches. Extraction is robust to format variation under the locked patterns."
+    },
+    {
+      "trial_id": 4,
+      "condition": "NUM",
+      "max_tokens": 1024,
+      "question": "Who painted the Mona Lisa?",
+      "finish_reason": "stop",
+      "response_length_tokens": 334,
+      "contains_open_think": true,
+      "contains_close_think": true,
+      "verbatim_post_think_substring": "The Mona Lisa was painted by Leonardo da Vinci. He is the renowned Italian artist from the Renaissance period, famous for works like the Last Supper and the Vitruvian Man. The painting is iconic for its enigmatic smile and is part of the Louvre Museum in Paris. There is no widely recognized alternative attribution, so da Vinci is confidently the creator.\n**Answer:** Leonardo da Vinci painted the Mona Lisa.\n**Confidence Level:** 100%",
+      "parsed_answer_under_locked_parser": "(first-line fallback on post-think lstrip extracts the meandering prose; alias substring match against 'Leonardo da Vinci' succeeds)",
+      "parsed_confidence_under_locked_parser": 1.0,
+      "parse_status_under_locked_parser": "success",
+      "finding": "M8 emitted a THIRD distinct confidence format: **Confidence Level:** 100% (markdown with the word 'Level'). Three NUM trials have now produced three different confidence-line formats: **Confidence:** (trial 2), plain 'I am X%' (trial 3), **Confidence Level:** (trial 4). The locked \\d+% fallback pattern extracts from all three formats. No parser tuning is warranted or permitted; the format instability is itself an empirical finding about M8."
+    },
+    {
+      "trial_id": 5,
+      "condition": "CAT",
+      "max_tokens": 1024,
+      "question": "Who was the man behind The Chipmunks?",
+      "finish_reason": "stop",
+      "response_length_tokens": 280,
+      "contains_open_think": true,
+      "contains_close_think": true,
+      "verbatim_post_think_substring": "The man behind The Chipmunks is Ross Bagne.",
+      "categorical_class_strings_found": [],
+      "parse_status_under_locked_parser": "no_confidence_field",
+      "finding": "M8 emitted an answer (truncated/incorrect: 'Ross Bagne' rather than 'Ross Bagdasarian') with NO categorical class string, despite the explicit CAT system prompt listing all 10 classes and instructing 'NO REASONING OR EXPLANATION'. The locked CAT_PATTERN returns no match. parse_status=no_confidence_field. This is the first of three CAT trials showing format refusal."
+    },
+    {
+      "trial_id": 6,
+      "condition": "CAT",
+      "max_tokens": 1024,
+      "question": "What is the capital of Australia?",
+      "finish_reason": "stop",
+      "response_length_tokens": 175,
+      "contains_open_think": true,
+      "contains_close_think": true,
+      "verbatim_post_think_substring": "The capital of Australia is Canberra.",
+      "categorical_class_strings_found": [],
+      "parse_status_under_locked_parser": "no_confidence_field",
+      "finding": "Second CAT trial. M8 emitted a correct answer with NO categorical class string. Same pattern as trial 5."
+    },
+    {
+      "trial_id": 7,
+      "condition": "CAT",
+      "max_tokens": 1024,
+      "question": "Who painted the Mona Lisa?",
+      "finish_reason": "stop",
+      "response_length_tokens": 358,
+      "contains_open_think": true,
+      "contains_close_think": true,
+      "verbatim_post_think_substring": "The Mona Lisa was painted by Leonardo da Vinci, primarily, though he may have had assistants. The painting is his iconic work and is widely attributed to him.\n**Answer:** Leonardo da Vinci painted the Mona Lisa.",
+      "categorical_class_strings_found": [],
+      "parse_status_under_locked_parser": "no_confidence_field",
+      "finding": "Third and final CAT trial. M8 emitted a correct answer with NO categorical class string. Three-for-three systematic refusal of the categorical elicitation format across three different items. This is the empirical basis for the pilot-informed prediction in pre-reg §2.1."
+    }
+  ],
+  "decisions_informed_by_trials": {
+    "M8_max_tokens_locked_at_1024": {
+      "pre_reg_section": "§3.4",
+      "evidence": "Trial 1 showed 256 is insufficient (truncation mid-reasoning). Trials 2, 3, 4, 5, 6, 7 all finished with finish_reason=stop at max_tokens=1024, reasoning traces of 175-710 tokens. 1024 provides comfortable headroom."
+    },
+    "inference_uses_raw_call_with_gguf_templates": {
+      "pre_reg_section": "§3.4",
+      "evidence": "Separate diagnostic (diag_logprobs.py, run earlier on 14 April 2026) established that llama-cpp-python 0.3.16's create_chat_completion returns logprobs=None on both M1 and M3. The raw __call__ path returns populated logprobs (verified on M1 via verify_m1_logprobs.py: 64 tokens, 64 logprobs, top-5 alternatives). gguf chat templates are accessed via llm.metadata['tokenizer.chat_template'] and rendered with Jinja2."
+    },
+    "m8_cat_pilot_informed_prediction": {
+      "pre_reg_section": "§2.1",
+      "evidence": "Three CAT trials (5, 6, 7) on three different items produced zero categorical class strings across the board. Pre-registered expectation: M8 CAT parse success rate will be substantially reduced relative to M8 NUM. Not a confirmatory hypothesis; commitment is to report main-collection M8 CAT behaviour against this prediction regardless of direction."
+    },
+    "e5_restricted_to_m8_num": {
+      "pre_reg_section": "§4.3",
+      "evidence": "Testing the within-M8 correlation between thought_block_token_count and parsed_confidence on CAT is uninformative when CAT produces no parseable confidence. E5 is restricted to NUM and refined with a partial-correlation control for item difficulty (proportion of M2-M7 correct on each item)."
+    },
+    "parser_patterns_NOT_modified": {
+      "pre_reg_section": "§3.7, §3.6",
+      "evidence": "Trials 2-4 revealed that M8 NUM emits inconsistent confidence-line formatting (**Confidence:** / plain 'I am X%' / **Confidence Level:**). The locked \\d+% fallback pattern extracts from all three. No new markdown-aware patterns are added. Adding patterns in response to observed model output would be parser tuning to maximise extraction from a single model, which the locked-patterns rule exists to prevent."
+    },
+    "framing_ties_h1_to_screen_before_you_interpret_2_3": {
+      "pre_reg_section": "§1.2",
+      "evidence": "The verification trials clarified that the saturation study is best framed as a focused empirical demonstration of when the Cacioli (2026e) §2.3 degeneracy criterion (<3 distinct values OR >95% in single category) fires across an open-weight 3-9B sample. The trials do not create this framing, but they motivated making it explicit in v1.0."
+    }
+  },
+  "what_these_trials_do_not_do": [
+    "They do not modify any confirmatory hypothesis (H1-H5).",
+    "They do not tune any decision rule.",
+    "They do not modify the locked regex patterns.",
+    "They do not modify the 524-item main sample.",
+    "They do not modify the order seeds.",
+    "They do not exclude M8 from the sample (M8 is retained; see pre-reg §2.1 and §3.7).",
+    "They do not constitute pilot data in the hypothesis-testing sense. No per-trial measurements from these 6 items enter the main analysis pipeline.",
+    "They are audit material: infrastructure verification plus the empirical basis for design decisions that would otherwise be arbitrary choices."
+  ]
+}
