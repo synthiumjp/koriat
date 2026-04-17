@@ -1,0 +1,11 @@
+family,condition,mean_pct_ceiling,mean_conf,n_models
+DeepSeek-distilled,CAT,0.1268,0.6218,1
+DeepSeek-distilled,NUM,0.7237,0.9125,1
+Gemma,CAT,0.1587,0.7888,1
+Gemma,NUM,0.9637,0.9574,1
+Llama,CAT,0.02585,0.7384,2
+Llama,NUM,0.9200999999999999,0.96475,2
+Mistral,CAT,0.0096,0.607,1
+Mistral,NUM,0.9651,0.9801,1
+Qwen,CAT,0.004,0.3187,2
+Qwen,NUM,0.96145,0.9793000000000001,2

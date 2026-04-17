@@ -1,0 +1,17 @@
+model_id,condition,n_success,tier,reason,accuracy,TRIN,TRIN_dir,L,L_ci,Fp,Fp_ci,RBS,RBS_ci,r,r_p,r_ci
+M1,NUM,0,Insufficient,No parse-success trials,,,,,,,,,,,,
+M1,CAT,0,Insufficient,No parse-success trials,,,,,,,,,,,,
+M2,NUM,500,Invalid,"§2.3 degeneracy: 100.0% in single category (fixed-high), L=1.000, Fp=0.000",0.776,1.0,fixed-high,1.0,"(0.967, 1.000)",0.0,"(0.000, 0.010)",0.0,"(0.000, 0.000)",,,
+M2,CAT,504,Insufficient,Cell 'c' has 0 < 5 observations,0.0198,0.8313,fixed-high,0.8279,"(0.792, 0.859)",0.0,"(0.000, 0.278)",-0.1721,"(-0.205, -0.139)",0.0641,0.1508,"(-0.023, 0.151)"
+M3,NUM,471,Invalid,"§2.3 degeneracy: 98.9% in single category (fixed-high), L=0.949, Fp=0.003",0.8323,0.9894,fixed-high,0.9494,"(0.877, 0.980)",0.0026,"(0.000, 0.014)",-0.0481,"(-0.097, 0.001)",0.1753,0.0001,"(0.086, 0.262)"
+M3,CAT,161,Insufficient,Cell 'c' has 0 < 5 observations,0.6522,0.9068,fixed-high,0.7321,"(0.604, 0.830)",0.0,"(0.000, 0.035)",-0.2679,"(-0.384, -0.152)",0.4389,0.0000,"(0.305, 0.556)"
+M4,NUM,516,Invalid,"§2.3 degeneracy: 98.8% in single category (fixed-high), L=0.976, Fp=0.008",0.7578,0.9884,fixed-high,0.976,"(0.932, 0.992)",0.0077,"(0.003, 0.022)",-0.0163,"(-0.045, 0.012)",0.0653,0.1388,"(-0.021, 0.151)"
+M4,CAT,523,Insufficient,Cell 'c' has 2 < 5 observations,0.0249,0.8891,fixed-high,0.8902,"(0.860, 0.914)",0.1538,"(0.043, 0.422)",0.044,"(-0.154, 0.242)",-0.0218,0.6183,"(-0.107, 0.064)"
+M5,NUM,522,Invalid,"§2.3 degeneracy: 97.7% in single category (fixed-high), L=0.953, Fp=0.006",0.59,0.977,fixed-high,0.9533,"(0.916, 0.974)",0.0065,"(0.002, 0.023)",-0.0402,"(-0.070, -0.011)",0.132,0.0025,"(0.047, 0.215)"
+M5,CAT,503,Insufficient,Cell 'c' has 3 < 5 observations,0.0417,0.839,fixed-low,0.1307,"(0.104, 0.164)",0.1429,"(0.050, 0.346)",-0.7264,"(-0.879, -0.574)",0.3953,0.0000,"(0.319, 0.467)"
+M6,NUM,517,Invalid,"§2.3 degeneracy: 99.4% in single category (fixed-high), L=0.986, Fp=0.003",0.7157,0.9942,fixed-high,0.9864,"(0.952, 0.996)",0.0027,"(0.000, 0.015)",-0.0109,"(-0.030, 0.009)",0.0648,0.1415,"(-0.022, 0.150)"
+M6,CAT,521,Insufficient,Cell 'a' has 4 < 5 observations,0.0077,0.6488,fixed-high,0.646,"(0.604, 0.686)",0.0,"(0.000, 0.490)",-0.354,"(-0.395, -0.313)",0.0647,0.1401,"(-0.021, 0.150)"
+M7,NUM,524,Invalid,"§2.3 degeneracy: 100.0% in single category (fixed-high), L=1.000, Fp=0.000",0.7557,1.0,fixed-high,1.0,"(0.971, 1.000)",0.0,"(0.000, 0.010)",0.0,"(0.000, 0.000)",,,
+M7,CAT,523,Invalid,"§2.3 degeneracy: 96.2% in single category (fixed-high), L=0.962, Fp=0.000",0.0019,0.9618,fixed-high,0.9617,"(0.942, 0.975)",0.0,"(0.000, 0.793)",-0.0383,"(-0.055, -0.022)",0.0087,0.8422,"(-0.077, 0.094)"
+M8,NUM,409,Invalid,"§2.3 degeneracy: 99.0% in single category (fixed-high), L=0.976, Fp=0.000",0.5868,0.9902,fixed-high,0.9763,"(0.941, 0.991)",0.0,"(0.000, 0.016)",-0.0237,"(-0.047, -0.001)",0.1184,0.0166,"(0.022, 0.213)"
+M8,CAT,71,Insufficient,Cell 'c' has 4 < 5 observations,0.2535,0.7465,fixed-high,0.7358,"(0.604, 0.836)",0.2222,"(0.090, 0.452)",-0.0419,"(-0.268, 0.184)",0.0419,0.7285,"(-0.193, 0.273)"

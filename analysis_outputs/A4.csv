@@ -1,0 +1,8 @@
+model_id,num_tier,cat_tier,rescued
+M2,Invalid,Insufficient,False
+M3,Invalid,Insufficient,False
+M4,Invalid,Insufficient,False
+M5,Invalid,Insufficient,False
+M6,Invalid,Insufficient,False
+M7,Invalid,Invalid,False
+M8,Invalid,Insufficient,False
