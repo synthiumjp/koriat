@@ -809,11 +809,74 @@ def process_trial(model_spec: dict, condition: str, item: dict,
 
 
 # ============================================================================
-# INCREMENTAL PARQUET WRITER
+# INCREMENTAL PARQUET WRITER (patched 15 April 2026 — explicit schema)
+# ============================================================================
+# Bugfix: the original writer inferred its schema from the first flushed batch
+# via pa.Table.from_pandas(). When a batch contained columns that were entirely
+# None (e.g. M1 NUM where parsed_confidence is always None because M1 is the
+# base model), pyarrow inferred those columns as `null` type, and subsequent
+# batches with actual double/string values mismatched the locked schema and
+# raised ValueError at write_table().
+#
+# Fix: declare an explicit pyarrow schema matching the TrialRecord dataclass
+# field-for-field and pass it to both pa.Table.from_pandas() and the
+# ParquetWriter constructor. Schema no longer depends on batch contents.
+#
+# Pre-registration deviation disclosure: this patch is a bugfix to the writer
+# only. No collection logic, seed, prompt, parser, record, hypothesis,
+# threshold, decision rule, or analysis procedure is affected. To be disclosed
+# in Methods as a post-registration bugfix to the ParquetWriter class.
 # ============================================================================
 
+TRIAL_RECORD_SCHEMA = pa.schema([
+    # Trial identification
+    ("model_id", pa.large_string()),
+    ("condition", pa.large_string()),
+    ("item_index", pa.int64()),
+    ("presentation_order_index", pa.int64()),
+    ("triviaqa_question_id", pa.large_string()),
+    ("inference_seed", pa.int64()),
+    ("order_seed", pa.int64()),
+    # Item content
+    ("question", pa.large_string()),
+    ("gold_answer_value", pa.large_string()),
+    ("gold_aliases", pa.list_(pa.string())),
+    # Model output
+    ("raw_response", pa.large_string()),
+    ("response_length_chars", pa.int64()),
+    ("response_length_tokens", pa.int64()),
+    ("finish_reason", pa.large_string()),
+    ("inference_time_seconds", pa.float64()),
+    ("parse_status", pa.large_string()),
+    # M8-specific
+    ("thought_block_token_count", pa.int64()),
+    ("thought_block_present", pa.bool_()),
+    # Parsed measurements (all nullable)
+    ("parsed_answer", pa.large_string()),
+    ("parsed_confidence", pa.float64()),
+    ("parsed_confidence_class", pa.large_string()),
+    ("parsed_confidence_raw_string", pa.large_string()),
+    ("confidence_position_relative_to_answer", pa.large_string()),
+    ("multiple_numeric_candidates_present", pa.bool_()),
+    ("correct", pa.bool_()),
+    # Logprob measurements (all nullable)
+    ("mean_logprob", pa.float64()),
+    ("sum_logprob", pa.float64()),
+    ("min_logprob", pa.float64()),
+    ("length_normalised_logprob", pa.float64()),
+    # Hedge counts
+    ("hedge_epistemic_count", pa.int64()),
+    ("hedge_self_count", pa.int64()),
+    ("hedge_uncertainty_count", pa.int64()),
+])
+
+
 class ParquetWriter:
-    """Append-only parquet writer that flushes every flush_every trials."""
+    """Append-only parquet writer that flushes every flush_every trials.
+
+    Uses an explicit schema (TRIAL_RECORD_SCHEMA) so batches with all-None
+    nullable columns do not corrupt schema inference.
+    """
 
     def __init__(self, path: Path, flush_every: int = 50):
         self.path = path
@@ -831,9 +894,14 @@ class ParquetWriter:
         if not self.buffer:
             return
         df = pd.DataFrame(self.buffer)
-        table = pa.Table.from_pandas(df, preserve_index=False)
+        # Cast to explicit schema; raises loudly if a field type drifts.
+        table = pa.Table.from_pandas(
+            df,
+            schema=TRIAL_RECORD_SCHEMA,
+            preserve_index=False,
+        )
         if self.writer is None:
-            self.writer = pq.ParquetWriter(self.path, table.schema)
+            self.writer = pq.ParquetWriter(self.path, TRIAL_RECORD_SCHEMA)
         self.writer.write_table(table)
         self.rows_written += len(self.buffer)
         self.buffer = []
