@@ -2,7 +2,8 @@
 
 **A Pre-Registered Psychometric Validity Screen**
 
-**Paper:** [arXiv:XXXX.XXXXX](https://arxiv.org/abs/XXXX.XXXXX) (update when posted)
+**Paper:** [arXiv:2604.22215](https://arxiv.org/abs/2604.22215)
+**Dataset:** [HuggingFace](https://huggingface.co/datasets/synthiumjp/verbal-confidence-saturation)
 
 **Author:** JP Cacioli
 **ORCID:** [0009-0000-7054-2014](https://orcid.org/0009-0000-7054-2014)
@@ -20,7 +21,6 @@ Registered on OSF. Immutable as of 15 April 2026.
 
 - **OSF project:** https://osf.io/xgt73
 - **OSF registration:** https://osf.io/azbvx/overview
-- **Pre-registration document:** [`saturation_prereg_v1_2.md`](saturation_prereg_v1_2.md)
 
 One deviation is disclosed: a bugfix to the ParquetWriter schema inference. No collection logic, seeds, prompts, or records were affected.
 
@@ -36,7 +36,6 @@ One deviation is disclosed: a bugfix to the ParquetWriter schema inference. No c
 ## Repository layout
 
 ```
-saturation_prereg_v1_2.md       Locked pre-registration document (v1.2)
 collect_saturation.py           Collection script (patched post-registration, deviation disclosed)
 analyze_saturation.py           Analysis pipeline (H1, H2, H4, H5, A1–A8, E1–E10)
 generate_figures.py             Figure generation (3 publication figures)
@@ -49,7 +48,7 @@ LICENSE                         MIT
 CITATION.cff                    Citation metadata
 ```
 
-Data artifacts (`raw_responses.parquet`, `sanity_run.parquet`) are on the OSF project page.
+Data: [HuggingFace](https://huggingface.co/datasets/synthiumjp/verbal-confidence-saturation) (`raw_responses.parquet`, 8,384 trials) and [OSF](https://osf.io/xgt73).
 
 ## Prompts
 
@@ -107,7 +106,7 @@ This study is part of the Classical Minds, Modern Machines research programme.
 @article{cacioli2026saturation,
   title={Verbal Confidence Saturation in 3--9B Open-Weight Instruction-Tuned LLMs: A Pre-Registered Psychometric Validity Screen},
   author={Cacioli, Jon-Paul},
-  journal={arXiv preprint arXiv:XXXX.XXXXX},
+  journal={arXiv preprint arXiv:2604.22215},
   year={2026}
 }
 ```
